@@ -2,7 +2,7 @@
 {
     "name": "Kelvin App",
     // Use latest Python image
-    "image": "python:latest",
+    "image": "mcr.microsoft.com/devcontainers/python:3.12",
     // VS Code extensions
     "customizations": {
         "vscode": {
