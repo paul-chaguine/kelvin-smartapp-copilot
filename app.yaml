@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=https://apps.kelvininc.com/schemas/kelvin/5.0.0/app/app.json
+spec_version: 5.0.0
+# Type
+type: app
+
+# Info
+name: App-X
+title: App X
+description: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+version: 1.0.0
+
+# Capabilities
+flags:
+  enable_runtime_update:
+    # Reload Application Configuration in runtime
+    configuration: false
+    # Enables the deployment of assets in runtime
+    resources: false
+    # Reload Asset Parameters in runtime
+    parameters: true
+    # Reload Asset Properties in runtime
+    resource_properties: true
+
+# Datastreams Definition
+data_streams:
+  inputs: []
+  outputs: []
+
+# Control Changes Definition
+control_changes:
+  inputs: []
+  outputs: []
+
+# Asset Parameters Definition
+parameters: []
+
+# UI JSON schemas (Optional)
+ui_schemas:
+  # Application Configuration Schema
+  configuration: "ui_schemas/configuration.json"
+  # Asset Parameters Schema
+  parameters: "ui_schemas/parameters.json"
+
+# Defaults (Runtime/Deployment)
+defaults:
+  # Application Configuration Default Values
+  configuration: {}
+
+  # Asset Parameters Default Values
+  parameters: {}
+
+  # System Settings
+  system: {}

@@ -12,6 +12,6 @@
             ]
         }
     },
-    // Run pip install and create a Kelvin app after the container is built
-    "postCreateCommand": "pip install 'kelvin-sdk[ai]' && kelvin app create app"
+    // Run pip install
+    "postCreateCommand": "pip install kelvin-sdk"
 }
