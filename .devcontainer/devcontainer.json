@@ -1,0 +1,17 @@
+// .devcontainer/devcontainer.json
+{
+    "name": "Kelvin App",
+    // Use latest Python image
+    "image": "python:latest",
+    // VS Code extensions
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python", // Python support
+                "ms-python.vscode-pylance" // Python language server
+            ]
+        }
+    },
+    // Run pip install and create a Kelvin app after the container is built
+    "postCreateCommand": "pip install 'kelvin-sdk[ai]' && kelvin app create app"
+}
