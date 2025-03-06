@@ -3,6 +3,12 @@
     "name": "Kelvin App",
     // Use latest Python image
     "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    // Features to install
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
+        }
+    },
     // VS Code extensions
     "customizations": {
         "vscode": {
