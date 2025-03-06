@@ -1,11 +1,10 @@
-# yaml-language-server: $schema=https://apps.kelvininc.com/schemas/kelvin/5.0.0/app/app.json
+# yaml-language-server: $schema=https://apps.kelvininc.com/schemas/kelvin/5.0.0/app.json
 spec_version: 5.0.0
-# Type
 type: app
 
 # Info
-name: App-X
-title: App X
+name: hello-app
+title: Hello App
 description: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 version: 1.0.0
 
