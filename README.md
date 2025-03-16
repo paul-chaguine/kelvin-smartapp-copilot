@@ -1,4 +1,4 @@
-![alt text](https://github.com/kelvininc/app-samples/blob/master/logo.png)
+![alt text](logo.png)
 
 # Welcome to a Kelvin SmartApp
 This repository contains a base application to help you get started with building a Kelvin SmartApp.

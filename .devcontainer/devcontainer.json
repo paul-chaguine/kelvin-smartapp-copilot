@@ -1,8 +1,11 @@
 // .devcontainer/devcontainer.json
 {
     "name": "Kelvin App",
-    // Use latest Python image
-    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    // Build custom Docker image
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
     // Features to install
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
