@@ -1,5 +1,23 @@
 {
     "type": "object",
-    "properties": {},
-    "required": []
+    "properties": {
+        "kelvin_control_mode": {
+            "type": "string",
+            "title": "Kelvin Control Mode",
+            "enum": [
+                "Open",
+                "Closed"
+            ]
+        },
+        "temperature_max_threshold": {
+            "type": "number",
+            "title": "Temperature Max Threshold",
+            "minimum": 50,
+            "maximum": 100
+        }
+    },
+    "required": [
+        "closed_loop",
+        "temperature_max_threshold"
+    ]
 }

@@ -2,51 +2,68 @@
 spec_version: 5.0.0
 type: app
 
-# Info
+# ------------------------------------------------------------------------------
+# Basic Information
+# ------------------------------------------------------------------------------
 name: hello-app
 title: Hello App
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+description: This is a hello app for demonstration purposes.
 version: 1.0.0
 
-# Capabilities
+# ------------------------------------------------------------------------------
+# Application Capabilities
+# ------------------------------------------------------------------------------
 flags:
   enable_runtime_update:
-    # Reload Application Configuration in runtime
-    configuration: false
-    # Enables the deployment of assets in runtime
-    resources: false
-    # Reload Asset Parameters in runtime
-    parameters: true
-    # Reload Asset Properties in runtime
-    resource_properties: true
+    configuration: false # Reload application configuration at runtime (without restart).
+    parameters: true # Reload application parameters at runtime (without restart).
+    resources: false # Deploy new assets at runtime (restart required).
+    resource_properties: true # Reload asset properties at runtime (without restart).
 
-# Datastreams Definition
+# ------------------------------------------------------------------------------
+# Datastream Definitions
+# ------------------------------------------------------------------------------
 data_streams:
-  inputs: []
+  inputs:
+    - name: motor_temperature # Application consumes motor temperature data.
+      data_type: number
+
   outputs: []
 
-# Control Changes Definition
+# ------------------------------------------------------------------------------
+# Control Changes Definitions
+# ------------------------------------------------------------------------------
 control_changes:
   inputs: []
-  outputs: []
+  outputs:
+    - name: motor_speed_set_point # Control output for setting motor speed.
+      data_type: number
 
-# Asset Parameters Definition
-parameters: []
+# ------------------------------------------------------------------------------
+# Application-Asset Parameters Definitions
+# ------------------------------------------------------------------------------
+parameters:
+  - name: kelvin_control_mode
+    data_type: string
+  - name: temperature_max_threshold
+    data_type: number
 
-# UI JSON schemas (Optional)
+# ------------------------------------------------------------------------------
+# UI Schemas (Optional)
+# ------------------------------------------------------------------------------
 ui_schemas:
-  # Application Configuration Schema
-  configuration: "ui_schemas/configuration.json"
-  # Asset Parameters Schema
+  # Define paths to UI schemas for optional configuration and parameter management.
+  # configuration: "ui_schemas/configuration.json"
   parameters: "ui_schemas/parameters.json"
 
-# Defaults (Runtime/Deployment)
+# ------------------------------------------------------------------------------
+# Default Settings (Runtime/Deployment)
+# ------------------------------------------------------------------------------
 defaults:
-  # Application Configuration Default Values
-  configuration: {}
+  configuration: {} # Default values for application configuration.
 
-  # Asset Parameters Default Values
-  parameters: {}
+  parameters: # Default values for application parameters.
+    closed_loop: false
+    temperature_max_threshold: 59
 
-  # System Settings
-  system: {}
+  system: {} # Default system settings (CPU/Memory Limits, Ports, Volumes, Environment Variables, etc).
