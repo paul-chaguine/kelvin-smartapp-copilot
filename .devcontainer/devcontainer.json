@@ -20,7 +20,5 @@
                 "ms-python.vscode-pylance" // Python language server
             ]
         }
-    },
-    // Run pip install
-    "postCreateCommand": "pip install kelvin-sdk"
+    }
 }
