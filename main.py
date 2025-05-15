@@ -25,6 +25,8 @@ async def main() -> None:
         asset = message.resource.asset
         temperature_value = message.payload
 
+        print(f"Received temperature value: {temperature_value} for asset: {asset}")
+
         # Fetch maximum allowed temperature threshold for the asset
         max_temp_threshold = app.assets[asset].parameters["temperature_max_threshold"]
 
@@ -37,7 +39,7 @@ async def main() -> None:
             )
 
             # Determine asset control mode
-            is_closed_loop = app.assets[asset].parameters.get("kelvin_control_mode", False)
+            is_closed_loop = app.assets[asset].parameters.get("kelvin_closed_loop", False)
 
             if is_closed_loop:
                 # Directly publish the control change if in closed loop mode

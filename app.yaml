@@ -43,9 +43,9 @@ control_changes:
 # Application-Asset Parameters Definitions
 # ------------------------------------------------------------------------------
 parameters:
-  - name: kelvin_control_mode
-    data_type: string
-  - name: temperature_max_threshold
+  - name: kelvin_closed_loop # Control mode for the application (Open or Closed Loop).
+    data_type: boolean
+  - name: temperature_max_threshold # Maximum temperature threshold for the application to generate a Control / Recommendation action.
     data_type: number
 
 # ------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ defaults:
   configuration: {} # Default values for application configuration.
 
   parameters: # Default values for application parameters.
-    kelvin_control_mode: false
+    kelvin_closed_loop: false
     temperature_max_threshold: 59
 
   system: {} # Default system settings (CPU/Memory Limits, Ports, Volumes, Environment Variables, etc).

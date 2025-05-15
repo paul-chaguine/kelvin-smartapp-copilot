@@ -1,13 +1,9 @@
 {
     "type": "object",
     "properties": {
-        "kelvin_control_mode": {
-            "type": "string",
-            "title": "Kelvin Control Mode",
-            "enum": [
-                "Open",
-                "Closed"
-            ]
+        "kelvin_closed_loop": {
+            "type": "boolean",
+            "title": "Kelvin Closed Loop"
         },
         "temperature_max_threshold": {
             "type": "number",
@@ -17,7 +13,7 @@
         }
     },
     "required": [
-        "kelvin_control_mode",
+        "kelvin_closed_loop",
         "temperature_max_threshold"
     ]
 }
