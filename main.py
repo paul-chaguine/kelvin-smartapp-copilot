@@ -37,7 +37,7 @@ async def main() -> None:
             )
 
             # Determine asset control mode
-            is_closed_loop = app.assets[asset].parameters.get("closed_loop", False)
+            is_closed_loop = app.assets[asset].parameters.get("kelvin_control_mode", False)
 
             if is_closed_loop:
                 # Directly publish the control change if in closed loop mode

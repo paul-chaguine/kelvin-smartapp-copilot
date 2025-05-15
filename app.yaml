@@ -63,7 +63,7 @@ defaults:
   configuration: {} # Default values for application configuration.
 
   parameters: # Default values for application parameters.
-    closed_loop: false
+    kelvin_control_mode: false
     temperature_max_threshold: 59
 
   system: {} # Default system settings (CPU/Memory Limits, Ports, Volumes, Environment Variables, etc).

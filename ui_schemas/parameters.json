@@ -17,7 +17,7 @@
         }
     },
     "required": [
-        "closed_loop",
+        "kelvin_control_mode",
         "temperature_max_threshold"
     ]
 }
