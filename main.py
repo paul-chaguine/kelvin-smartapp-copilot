@@ -34,7 +34,7 @@ async def main() -> None:
             # Construct a control change to adjust motor speed
             motor_speed_adjustment = ControlChange(
                 resource=KRNAssetDataStream(asset, "motor_speed_set_point"),  # Targeting the motor speed set point
-                payload=temperature_value * -0.1,  # Reduce motor speed by 10% of temperature value
+                payload=temperature_value - (temperature_value * 0.1),  # Reduce motor speed by 10% of temperature value
                 expiration_date=timedelta(minutes=10),  # Set expiration date for the control change
             )
 
