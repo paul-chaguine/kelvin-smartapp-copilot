@@ -31,6 +31,9 @@ async def main() -> None:
         max_temp_threshold = app.assets[asset].parameters["temperature_max_threshold"]
 
         if temperature_value > max_temp_threshold:
+
+            print(f"Temperature exceeds threshold: {max_temp_threshold}")
+
             # Construct a control change to adjust motor speed
             motor_speed_adjustment = ControlChange(
                 resource=KRNAssetDataStream(asset, "motor_speed_set_point"),  # Targeting the motor speed set point
@@ -44,6 +47,7 @@ async def main() -> None:
             if is_closed_loop:
                 # Directly publish the control change if in closed loop mode
                 await app.publish(motor_speed_adjustment)
+
                 print(f"Published Control Change: Decreased motor speed by {motor_speed_adjustment.payload}")
             else:
                 # Publish a recommendation if manual action is required
@@ -53,6 +57,7 @@ async def main() -> None:
                     control_changes=[motor_speed_adjustment],  # Include the control change in the recommendation
                 )
                 await app.publish(recommendation)
+
                 print(f"Published Recommendation: Suggest decreasing motor speed by {motor_speed_adjustment.payload}")
 
 
