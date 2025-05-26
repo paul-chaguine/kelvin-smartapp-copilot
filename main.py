@@ -1,64 +1,96 @@
 import asyncio
 from datetime import timedelta
-from typing import AsyncGenerator
 
 from kelvin.application import KelvinApp, filters
 from kelvin.krn import KRNAsset, KRNAssetDataStream
-from kelvin.message import ControlChange, Number, Recommendation
+from kelvin.message import ControlChange, Recommendation
+from kelvin.message.evidences import Image, Markdown
 
 
 async def main() -> None:
     """
-    Main entry point for the Kelvin Application.
-
-    - Connects the app to Kelvin.
-    - Subscribes to a filtered stream of "motor_temperature" input messages.
-    - Monitors temperature values and issues either a control change or a recommendation based on predefined asset parameters.
+    Start streaming asset data, monitor motor temperature vs. thresholds,
+    and issue speed-reduction recommendations when necessary.
     """
     app = KelvinApp()
     await app.connect()
 
-    # Stream messages where the input type matches "motor_temperature"
-    temperature_stream: AsyncGenerator[Number, None] = app.stream_filter(filters.input_equals("motor_temperature"))
+    # Store the most recent motor_speed values per asset
+    latest_motor_speeds: dict[str, float] = {}
 
-    async for message in temperature_stream:
-        asset = message.resource.asset
-        temperature_value = message.payload
+    # Process each incoming asset data message
+    async for message in app.stream_filter(filters.is_asset_data_message):
+        asset_id = message.resource.asset
+        data_stream = message.resource.data_stream
+        measurement = message.payload
 
-        print(f"Received temperature value: {temperature_value} for asset: {asset}")
+        print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
 
-        # Fetch maximum allowed temperature threshold for the asset
-        max_temp_threshold = app.assets[asset].parameters["temperature_max_threshold"]
+        # Track motor speed measurements for future use
+        if data_stream == "motor_speed":
+            latest_motor_speeds[asset_id] = measurement
+            continue
 
-        if temperature_value > max_temp_threshold:
+        # Only act on motor_temperature readings
+        if data_stream != "motor_temperature":
+            continue
 
-            print(f"Temperature exceeds threshold: {max_temp_threshold}")
+        # Retrieve configured max temperature for this asset
+        max_temp = app.assets[asset_id].parameters.get("temperature_max_threshold")
 
-            # Construct a control change to adjust motor speed
-            motor_speed_adjustment = ControlChange(
-                resource=KRNAssetDataStream(asset, "motor_speed_set_point"),  # Targeting the motor speed set point
-                payload=temperature_value - (temperature_value * 0.1),  # Reduce motor speed by 10% of temperature value
-                expiration_date=timedelta(minutes=10),  # Set expiration date for the control change
+        if max_temp is None:
+            print(f"No temperature threshold configured for asset '{asset_id}'. Skipping.")
+            continue
+
+        # If current temperature exceeds allowed limit, prepare a recommendation
+        if measurement > max_temp:
+            print(f"Temperature {measurement}° exceeds limit {max_temp}° for asset '{asset_id}'.")
+
+            # Get last known motor speed; skip if unavailable
+            speed = latest_motor_speeds.get(asset_id)
+            if speed is None:
+                print(f"Missing recent motor speed for '{asset_id}'. Cannot calculate adjustment.")
+                continue
+
+            # Reduce speed by 10% for safety
+            new_speed_setpoint = speed * 0.9
+            if new_speed_setpoint < 0:
+                print(f"Calculated new speed setpoint {new_speed_setpoint} is invalid for asset '{asset_id}'.")
+                continue
+
+            control_action = ControlChange(
+                resource=KRNAssetDataStream(asset_id, "motor_speed_set_point"),
+                payload=new_speed_setpoint,
+                expiration_date=timedelta(minutes=30),
             )
 
-            # Determine asset control mode
-            is_closed_loop = app.assets[asset].parameters.get("kelvin_closed_loop", False)
+            # Include step-by-step guidance in markdown
+            guidance = Markdown(
+                title="Conduct a Thorough Load Assessment",
+                markdown=(
+                    "- **Measure** discharge pressure and flow rate.\n"
+                    "- **Compare** readings to the pump-motor curve.\n"
+                    "- **Action:** If pressure is too high, consider trimming impeller or reconfiguring pump staging.\n"
+                ),
+            )
 
-            if is_closed_loop:
-                # Directly publish the control change if in closed loop mode
-                await app.publish(motor_speed_adjustment)
+            # Placeholder for visual evidence (e.g., schematic or infographic)
+            infographic = Image(title="Load Assessment Infographic", url="https://kelvin-platform-cdn.kelvin.ai/demo-data/evidences/pcp_motor.jpg")
 
-                print(f"Published Control Change: Decreased motor speed by {motor_speed_adjustment.payload}")
-            else:
-                # Publish a recommendation if manual action is required
-                recommendation = Recommendation(
-                    resource=KRNAsset(asset),  # Targeting the asset itself
-                    type="Decrease Speed",  # What is the recommendation about
-                    control_changes=[motor_speed_adjustment],  # Include the control change in the recommendation
-                )
-                await app.publish(recommendation)
+            # Build the recommendation object
+            recommendation = Recommendation(
+                resource=KRNAsset(asset_id),
+                type="Decrease Speed",
+                control_changes=[control_action],
+                evidences=[guidance, infographic],
+                auto_accepted=app.assets[asset_id].parameters.get("kelvin_closed_loop", False),
+                expiration_date=timedelta(minutes=30),
+            )
 
-                print(f"Published Recommendation: Suggest decreasing motor speed by {motor_speed_adjustment.payload}")
+            # Send recommendation to Kelvin for operator review or auto-execution
+            await app.publish(recommendation)
+
+            print(f"Published Recommendation: set speed to {new_speed_setpoint} rpm")
 
 
 if __name__ == "__main__":

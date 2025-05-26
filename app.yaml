@@ -24,8 +24,10 @@ flags:
 # Datastream Definitions
 # ------------------------------------------------------------------------------
 data_streams:
-  inputs:
-    - name: motor_temperature # Application consumes motor temperature data.
+  inputs: # Application consumes motor temperature and speed data.
+    - name: motor_temperature
+      data_type: number
+    - name: motor_speed
       data_type: number
 
   outputs: []
@@ -38,6 +40,13 @@ control_changes:
   outputs:
     - name: motor_speed_set_point # Control output for setting motor speed.
       data_type: number
+
+# ------------------------------------------------------------------------------
+# Custom Actions Definitions
+# ------------------------------------------------------------------------------
+custom_actions:
+  inputs: []
+  outputs: []
 
 # ------------------------------------------------------------------------------
 # Application-Asset Parameters Definitions
