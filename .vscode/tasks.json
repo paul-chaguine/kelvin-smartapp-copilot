@@ -1,20 +1,4 @@
 {
   "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Stage Commit Push",
-      "type": "shell",
-      "command": "git add -A && (git diff --staged --quiet || git commit -m \"auto: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\") && git push",
-      "options": { "cwd": "${workspaceFolder}" },
-      "problemMatcher": []
-    },
-    {
-      "label": "Kelvin: App Upload",
-      "type": "shell",
-      "command": "kelvin app upload",
-      "options": { "cwd": "${workspaceFolder}" },
-      "problemMatcher": [],
-      "detail": "Runs `kelvin app upload` from the workspace root"
-    }
-  ]
+  "tasks": []
 }
