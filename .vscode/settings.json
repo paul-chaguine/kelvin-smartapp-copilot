@@ -17,7 +17,6 @@
     {
       "command": "multiCommand.kelvinUpload",
       "sequence": [
-        "workbench.action.files.save",
         "workbench.action.terminal.new",
         "workbench.action.terminal.focus",
         {
