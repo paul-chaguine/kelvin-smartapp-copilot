@@ -5,7 +5,7 @@ type: app
 # ------------------------------------------------------------------------------
 # Basic Information
 # ------------------------------------------------------------------------------
-name: voltage-app
+name: voltage-app-50
 title: Voltage Anomaly Detection
 description: This is a hello app for demonstration purposes.
 version: 1.0.0

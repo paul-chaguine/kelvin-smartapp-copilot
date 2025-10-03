@@ -1,7 +1,4 @@
 [
-  {
-    "key": "ctrl+s",
-    "command": "multiCommand.saveAndPush",
-    "when": "editorTextFocus && !inDebugRepl"
-  }
+  { "key": "ctrl+s", "command": "-workbench.action.files.save" },
+  { "key": "ctrl+s", "command": "multiCommand.stageCommitPush", "when": "editorTextFocus && !inDebugRepl" }
 ]

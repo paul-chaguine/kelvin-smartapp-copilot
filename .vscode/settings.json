@@ -1,11 +1,19 @@
 {
   "multiCommand.commands": [
     {
-      "command": "multiCommand.saveAndPush",
+      "command": "multiCommand.stageCommitPush",
       "sequence": [
         "workbench.action.files.save",
-        { "command": "workbench.action.tasks.runTask", "args": "Stage Commit Push" }
+        "workbench.action.terminal.new",
+        "workbench.action.terminal.focus",
+        {
+          "command": "workbench.action.terminal.sendSequence",
+          "args": {
+            "text": "cd ${workspaceFolder} && git add -A && (git diff --staged --quiet || git commit -m \"auto: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\") && git push\n"
+          }
+        }
       ]
     }
   ]
 }
+
