@@ -1,0 +1,11 @@
+{
+  "multiCommand.commands": [
+    {
+      "command": "multiCommand.saveAndPush",
+      "sequence": [
+        "workbench.action.files.save",
+        { "command": "workbench.action.tasks.runTask", "args": "Stage Commit Push" }
+      ]
+    }
+  ]
+}

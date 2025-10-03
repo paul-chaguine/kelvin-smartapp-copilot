@@ -1,0 +1,7 @@
+[
+  {
+    "key": "ctrl+s",
+    "command": "multiCommand.saveAndPush",
+    "when": "editorTextFocus && !inDebugRepl"
+  }
+]
