@@ -1,4 +1,17 @@
 [
-  { "key": "ctrl+s", "command": "-workbench.action.files.save" },
-  { "key": "ctrl+s", "command": "multiCommand.stageCommitPush", "when": "editorTextFocus && !inDebugRepl" }
+  { "key": "ctrl+s", 
+    "command": "-workbench.action.files.save" 
+  },
+  { 
+    "key": "ctrl+s", 
+    "command": "multiCommand.stageCommitPush", 
+    "when": "editorTextFocus && !inDebugRepl" 
+  },
+  {
+    "key": "ctrl+u",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Kelvin: App Upload",
+    "when": "editorTextFocus && !inDebugRepl"
+  }
+
 ]
