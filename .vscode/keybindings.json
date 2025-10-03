@@ -10,7 +10,6 @@
   {
     "key": "ctrl+u",
     "command": "multiCommand.kelvinUpload",
-    "args": "Kelvin: App Upload",
     "when": "editorTextFocus && !inDebugRepl"
   }
 
