@@ -9,7 +9,7 @@
   },
   {
     "key": "ctrl+u",
-    "command": "workbench.action.tasks.runTask",
+    "command": "multiCommand.kelvinUpload",
     "args": "Kelvin: App Upload",
     "when": "editorTextFocus && !inDebugRepl"
   }

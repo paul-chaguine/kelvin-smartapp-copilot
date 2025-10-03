@@ -13,6 +13,20 @@
           }
         }
       ]
+    },
+    {
+      "command": "multiCommand.kelvinUpload",
+      "sequence": [
+        "workbench.action.files.save",
+        "workbench.action.terminal.new",
+        "workbench.action.terminal.focus",
+        {
+          "command": "workbench.action.terminal.sendSequence",
+          "args": {
+            "text": "cd ${workspaceFolder} && kelvin app upload\n"
+          }
+        }
+      ]
     }
   ]
 }
