@@ -8,7 +8,7 @@
     "when": "editorTextFocus && !inDebugRepl" 
   },
   {
-    "key": "ctrl+u",
+    "key": "ctrl+i",
     "command": "multiCommand.kelvinUpload",
     "when": "editorTextFocus && !inDebugRepl"
   }
