@@ -3,7 +3,7 @@ type: app
 name: voltage-app
 title: Voltage Anomaly Detection
 description: This is a hello app for demonstration purposes.
-version: 1.0.1
+version: 1.0.0
 flags:
   enable_runtime_update:
     configuration: false
