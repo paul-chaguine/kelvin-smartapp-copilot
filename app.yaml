@@ -1,78 +1,40 @@
-# yaml-language-server: $schema=https://apps.kelvininc.com/schemas/kelvin/5.0.0/app.json
 spec_version: 5.0.0
 type: app
-
-# ------------------------------------------------------------------------------
-# Basic Information
-# ------------------------------------------------------------------------------
 name: voltage-app
 title: Voltage Anomaly Detection
 description: This is a hello app for demonstration purposes.
-version: 1.0.0
-
-# ------------------------------------------------------------------------------
-# Application Capabilities
-# ------------------------------------------------------------------------------
+version: 1.0.1
 flags:
   enable_runtime_update:
-    configuration: false # Reload application configuration at runtime (without restart).
-    parameters: true # Reload application parameters at runtime (without restart).
-    resources: false # Deploy new assets at runtime (restart required).
-    resource_properties: true # Reload asset properties at runtime (without restart).
-
-# ------------------------------------------------------------------------------
-# Datastream Definitions
-# ------------------------------------------------------------------------------
+    configuration: false
+    parameters: true
+    resources: false
+    resource_properties: true
 data_streams:
-  inputs: # Application consumes motor temperature and speed data.
+  inputs:
     - name: motor_temperature
       data_type: number
     - name: motor_speed
       data_type: number
-
   outputs: []
-
-# ------------------------------------------------------------------------------
-# Control Changes Definitions
-# ------------------------------------------------------------------------------
 control_changes:
   inputs: []
   outputs:
-    - name: motor_speed_set_point # Control output for setting motor speed.
+    - name: motor_speed_set_point
       data_type: number
-
-# ------------------------------------------------------------------------------
-# Custom Actions Definitions
-# ------------------------------------------------------------------------------
 custom_actions:
   inputs: []
   outputs: []
-
-# ------------------------------------------------------------------------------
-# Application-Asset Parameters Definitions
-# ------------------------------------------------------------------------------
 parameters:
-  - name: kelvin_closed_loop # Control mode for the application (Open or Closed Loop).
+  - name: kelvin_closed_loop
     data_type: boolean
-  - name: temperature_max_threshold # Maximum temperature threshold for the application to generate a Control / Recommendation action.
+  - name: temperature_max_threshold
     data_type: number
-
-# ------------------------------------------------------------------------------
-# UI Schemas (Optional)
-# ------------------------------------------------------------------------------
 ui_schemas:
-  # Define paths to UI schemas for optional configuration and parameter management.
-  # configuration: "ui_schemas/configuration.json"
-  parameters: "ui_schemas/parameters.json"
-
-# ------------------------------------------------------------------------------
-# Default Settings (Runtime/Deployment)
-# ------------------------------------------------------------------------------
+  parameters: ui_schemas/parameters.json
 defaults:
-  configuration: {} # Default values for application configuration.
-
-  parameters: # Default values for application parameters.
+  configuration: {}
+  parameters:
     kelvin_closed_loop: false
     temperature_max_threshold: 59
-
-  system: {} # Default system settings (CPU/Memory Limits, Ports, Volumes, Environment Variables, etc).
+  system: {}
