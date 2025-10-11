@@ -39,8 +39,7 @@ async def main() -> None:
     #     stream_data_quality_messages(app),stream_asset_data_messages(app)
     # ) 
 
-    results = asyncio.run(stream_asset_data_messages(app))
-
+    results = await stream_asset_data_messages(app)
 
     # latest_dq_metric = results[0].data_quality_metric
     # print(f"Data quality metric is '{latest_dq_metric}'")
