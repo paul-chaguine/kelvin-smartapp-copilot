@@ -7,14 +7,14 @@ from kelvin.message import ControlChange, Recommendation
 from kelvin.message.evidences import Image, Markdown
 
 
-# async def stream_data_quality_messages(app: KelvinApp):
-#     async for message in app.stream_filter(filters.is_asset_data_quality_message):
-#         asset_id = message.resource.asset
-#         data_quality_metric = message.resource.data_quality
-#         dq_value = message.payload
-#         # Track dq measurements for future use
-#         print(f"Received '{data_quality_metric}' for asset '{asset_id}': {dq_value}")
-#         return asset_id, data_quality_metric, dq_value
+async def stream_data_quality_messages(app: KelvinApp):
+    async for message in app.stream_filter(filters.is_asset_data_quality_message):
+        asset_id = message.resource.asset
+        data_quality_metric = message.resource.data_quality
+        dq_value = message.payload
+        # Track dq measurements for future use
+        print(f"Received '{data_quality_metric}' for asset '{asset_id}': {dq_value}")
+        return asset_id, data_quality_metric, dq_value
 
 # Process each incoming asset data message
 async def stream_asset_data_messages(app: KelvinApp):
@@ -35,11 +35,11 @@ async def main() -> None:
 
     # Store the most recent motor_speed values per asset
 
-    # results = await asyncio.gather(
-    #     stream_data_quality_messages(app),stream_asset_data_messages(app)
-    # ) 
+    results = await asyncio.gather(
+        stream_asset_data_messages(app),stream_data_quality_messages(app)
+    ) 
 
-    results = await asyncio.run(stream_asset_data_messages(app))
+    # results = stream_asset_data_messages(app)
     print(f"Results: {results}")
 
     # latest_dq_metric = results[0].data_quality_metric

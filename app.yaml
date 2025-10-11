@@ -3,7 +3,7 @@ type: app
 name: speed-rec-dataquality
 title: Speed Recommendations Data Quality
 description: Send speed recommendations if data quality metrics are above thresholds
-version: 1.0.36
+version: 1.0.39
 flags:
   enable_runtime_update:
     configuration: false
