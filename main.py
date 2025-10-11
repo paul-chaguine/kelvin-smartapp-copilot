@@ -7,6 +7,41 @@ from kelvin.message import ControlChange, Recommendation
 from kelvin.message.evidences import Image, Markdown
 
 
+async def stream_data_quality_messages(app: KelvinApp, latest_dq: dict[str, float]) -> None:
+    for message in app.stream_filter(filters.is_asset_data_quality_message):
+        asset_id = message.resource.asset
+        data_quality_metric = message.resource.data_quality
+        value = message.payload
+        # Track dq measurements for future use
+        if data_quality_metric == "kelvin_data_availability":
+            latest_dq[asset_id] = value
+            print(f"Received '{data_quality_metric}' for asset '{asset_id}': {value}")
+        return asset_id, latest_dq
+
+# Process each incoming asset data message
+async def stream_asset_data_messages(app: KelvinApp, latest_speed: dict[str, float], latest_casing_pressure: dict[str, float], latest_tubing_pressure: dict[str, float]) -> None:
+    for message in app.stream_filter(filters.is_asset_data_message):
+        asset_id = message.resource.asset
+        data_stream = message.resource.data_stream
+        measurement = message.payload
+
+        print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
+        
+        if data_stream == "speed":
+            latest_speed[asset_id] = measurement
+            print(f"Updated latest speed for asset '{asset_id}': {measurement}")
+            return asset_id, latest_speed
+
+        if data_stream == "casing_pressure":
+            latest_casing_pressure[asset_id] = measurement
+            print(f"Updated latest casing pressure for asset '{asset_id}': {measurement}")
+            return asset_id, latest_casing_pressure
+
+        if data_stream == "tubing_pressure":
+            latest_tubing_pressure[asset_id] = measurement
+            print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")
+            return asset_id, latest_tubing_pressure
+
 async def main() -> None:
     """
     Start streaming asset data, monitor motor temperature vs. thresholds,
@@ -21,37 +56,21 @@ async def main() -> None:
     latest_tubing_pressure: dict[str, float] = {}
     latest_dq: dict[str, float] = {}
 
-    async for message in app.stream_filter(filters.is_asset_data_quality_message):
-        
-        asset_id = message.resource.asset
-        data_quality_metric = message.resource.data_quality
-        value = message.payload
-        # Track dq measurements for future use
-        if data_quality_metric == "kelvin_data_availability":
-            latest_dq[asset_id] = value
-            print(f"Received '{data_quality_metric}' for asset '{asset_id}': {value}")
-    
-    # Process each incoming asset data message
-    async for message in app.stream_filter(filters.is_asset_data_message):
-        asset_id = message.resource.asset
-        data_stream = message.resource.data_stream
-        measurement = message.payload
+    results = await asyncio.gather(
+        stream_data_quality_messages(app, latest_dq),stream_asset_data_messages(app, latest_speed, latest_casing_pressure, latest_tubing_pressure)
+    ) 
+    asset_id = results[0].asset_id
+    print(f"Processing data for asset '{asset_id}'")
+    latest_dq = results[0].latest_dq
+    print(f"Latest dq for asset '{asset_id}': {latest_dq.get(asset_id)}")
+    latest_speed = results[1].latest_speed
+    print(f"Latest speed for asset '{asset_id}': {latest_speed.get(asset_id)}")
+    latest_casing_pressure = results[1].latest_casing_pressure
+    print(f"Latest casing pressure for asset '{asset_id}': {latest_casing_pressure.get(asset_id)}")
+    latest_tubing_pressure = results[1].latest_tubing_pressure
+    print(f"Latest tubing pressure for asset '{asset_id}': {latest_tubing_pressure.get(asset_id)}")
 
-        print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
-        
-        if data_stream == "speed":
-            latest_speed[asset_id] = measurement
-            print(f"Updated latest speed for asset '{asset_id}': {measurement}")
-
-        if data_stream == "casing_pressure":
-            latest_casing_pressure[asset_id] = measurement
-            print(f"Updated latest casing pressure for asset '{asset_id}': {measurement}")
-
-        if data_stream == "tubing_pressure":
-            latest_tubing_pressure[asset_id] = measurement
-            print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")  
-
-        # Retrieve configured max temperature for this asset
+    # Retrieve configured max temperature for this asset
     min_dq = app.assets[asset_id].parameters.get("dataquality_min_threshold")
     print(f"Configured dq threshold for asset '{asset_id}': {min_dq}")
 
