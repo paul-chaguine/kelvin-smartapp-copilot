@@ -16,8 +16,22 @@ async def main() -> None:
     await app.connect()
 
     # Store the most recent motor_speed values per asset
-    latest_motor_speeds: dict[str, float] = {}
+    latest_speed: dict[str, float] = {}
+    latest_casing_pressure: dict[str, float] = {}
+    latest_tubing_pressure: dict[str, float] = {}
+    latest_dq: dict[str, float] = {}
 
+    # async for message in app.stream_filter(filters.is_asset_data_quality_message):
+        
+    #     asset_id = message.resource.asset
+    #     data_quality_metric = message.resource.data_quality
+    #     value = message.payload
+    #     # Track dq measurements for future use
+    #     if data_quality_metric == "kelvin_data_availability":
+    #         latest_dq[asset_id] = value
+    #         print(f"Received '{data_quality_metric}' for asset '{asset_id}': {value}")
+    #         continue
+    
     # Process each incoming asset data message
     async for message in app.stream_filter(filters.is_asset_data_message):
         asset_id = message.resource.asset
@@ -27,16 +41,15 @@ async def main() -> None:
         print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
         
         if data_stream == "speed":
-            latest_speeds[asset_id] = measurement
-            continue
-        
-        # Track dq measurements for future use
-        if data_stream == "data_quality":
-            dq[asset_id] = measurement
+            latest_speed[asset_id] = measurement
             continue
 
-        # Only act on motor_temperature readings
-        if data_stream != "data_quality":
+        if data_stream == "casing_pressure":
+            latest_casing_pressure[asset_id] = measurement
+            continue
+
+        if data_stream == "tubing_pressure":
+            latest_tubing_pressure[asset_id] = measurement
             continue
 
         # Retrieve configured max temperature for this asset
@@ -47,11 +60,11 @@ async def main() -> None:
             continue
 
         # If current temperature exceeds allowed limit, prepare a recommendation
-        if measurement > min_dq:
+        if latest_dq > min_dq:
             print(f"DQ {measurement} above limit {min_dq} for asset '{asset_id}'.")
 
             # Get last known motor speed; skip if unavailable
-            speed = latest_motor_speeds.get(asset_id)
+            speed = latest_speed.get(asset_id)
             if speed is None:
                 print(f"Missing recent motor speed for '{asset_id}'. Cannot calculate adjustment.")
                 continue

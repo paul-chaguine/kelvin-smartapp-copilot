@@ -5,15 +5,15 @@
             "type": "boolean",
             "title": "Kelvin Closed Loop"
         },
-        "temperature_max_threshold": {
+        "dataquality_min_threshold": {
             "type": "number",
-            "title": "Temperature Max Threshold",
+            "title": "Data Quality Minimum Threshold",
             "minimum": 50,
             "maximum": 100
         }
     },
     "required": [
         "kelvin_closed_loop",
-        "temperature_max_threshold"
+        "dataquality_min_threshold"
     ]
 }
