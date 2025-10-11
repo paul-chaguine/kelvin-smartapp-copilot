@@ -109,6 +109,8 @@ async def main() -> None:
 
             print(f"Published Recommendation: set speed to {new_speed_setpoint} rpm")
 
+            asyncio.sleep(200)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
