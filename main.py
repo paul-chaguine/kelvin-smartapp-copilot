@@ -112,8 +112,6 @@ async def main() -> None:
         latest_tubing_pressure = results[2]
         print(f"Latest tubing pressure for asset '{asset_id}': {latest_tubing_pressure}")
 
-    await asyncio.sleep(200)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
