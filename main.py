@@ -35,25 +35,29 @@ async def main() -> None:
 
     # Store the most recent motor_speed values per asset
 
-    results = await asyncio.gather(
-        stream_data_quality_messages(app),stream_asset_data_messages(app)
-    ) 
+    # results = await asyncio.gather(
+    #     stream_data_quality_messages(app),stream_asset_data_messages(app)
+    # ) 
+
+    results = asyncio.run(stream_asset_data_messages(app))
+
+
+    # latest_dq_metric = results[0].data_quality_metric
+    # print(f"Data quality metric is '{latest_dq_metric}'")
+    # latest_dq_value = results[0].dq_value
+    # print(f"Latest data quality value for asset '{asset_id}': {latest_dq_value}")
+
     asset_id = results[0].asset_id
     print(f"Processing data for asset '{asset_id}'")
-    latest_dq_metric = results[0].data_quality_metric
-    print(f"Data quality metric is '{latest_dq_metric}'")
-    latest_dq_value = results[0].dq_value
-    print(f"Latest data quality value for asset '{asset_id}': {latest_dq_value}")
-
-    latest_metric = results[1].data_stream
+    latest_metric = results[0].data_stream
     if latest_metric == "speed":
-        latest_speed = results[1].measurement
+        latest_speed = results[0].measurement
         print(f"Latest speed for asset '{asset_id}': {latest_speed}")
     elif latest_metric == "casing_pressure":
-        latest_casing_pressure = results[1].measurement
+        latest_casing_pressure = results[0].measurement
         print(f"Latest casing pressure for asset '{asset_id}': {latest_casing_pressure}")
     elif latest_metric == "tubing_pressure":
-        latest_tubing_pressure = results[1].measurement
+        latest_tubing_pressure = results[0].measurement
         print(f"Latest tubing pressure for asset '{asset_id}': {latest_tubing_pressure}")
 
     # Retrieve configured max temperature for this asset
