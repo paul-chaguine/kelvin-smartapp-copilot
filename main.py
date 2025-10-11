@@ -21,16 +21,15 @@ async def main() -> None:
     latest_tubing_pressure: dict[str, float] = {}
     latest_dq: dict[str, float] = {}
 
-    # async for message in app.stream_filter(filters.is_asset_data_quality_message):
+    async for message in app.stream_filter(filters.is_asset_data_quality_message):
         
-    #     asset_id = message.resource.asset
-    #     data_quality_metric = message.resource.data_quality
-    #     value = message.payload
-    #     # Track dq measurements for future use
-    #     if data_quality_metric == "kelvin_data_availability":
-    #         latest_dq[asset_id] = value
-    #         print(f"Received '{data_quality_metric}' for asset '{asset_id}': {value}")
-    #         continue
+        asset_id = message.resource.asset
+        data_quality_metric = message.resource.data_quality
+        value = message.payload
+        # Track dq measurements for future use
+        if data_quality_metric == "kelvin_data_availability":
+            latest_dq[asset_id] = value
+            print(f"Received '{data_quality_metric}' for asset '{asset_id}': {value}")
     
     # Process each incoming asset data message
     async for message in app.stream_filter(filters.is_asset_data_message):
@@ -43,32 +42,34 @@ async def main() -> None:
         if data_stream == "speed":
             latest_speed[asset_id] = measurement
             print(f"Updated latest speed for asset '{asset_id}': {measurement}")
-            continue
 
         if data_stream == "casing_pressure":
             latest_casing_pressure[asset_id] = measurement
             print(f"Updated latest casing pressure for asset '{asset_id}': {measurement}")
-            continue
 
         if data_stream == "tubing_pressure":
             latest_tubing_pressure[asset_id] = measurement
             print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")  
-            continue
+
+        # Retrieve configured max temperature for this asset
+        min_dq = app.assets[asset_id].parameters.get("dataquality_min_threshold")
+        print(f"Configured dq threshold for asset '{asset_id}': {min_dq}")
+
+        if min_dq is None:
+            print(f"No dq threshold configured for asset '{asset_id}'. Skipping.")
 
         # If current temperature exceeds allowed limit, prepare a recommendation
 
         # Get last known motor speed; skip if unavailable
-        speed = 100
+        speed = latest_speed.get(asset_id)
         print(f"Latest speed for asset '{asset_id}': {speed}")
         if speed is None:
             print(f"Missing recent motor speed for '{asset_id}'. Cannot calculate adjustment.")
-            continue
 
         # Reduce speed by 10% for safety
         new_speed_setpoint = speed * 0.9
         if new_speed_setpoint < 0:
             print(f"Calculated new speed setpoint {new_speed_setpoint} is invalid for asset '{asset_id}'.")
-            continue
 
         control_action = ControlChange(
             resource=KRNAssetDataStream(asset_id, "motor_speed_set_point"),
