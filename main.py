@@ -55,14 +55,6 @@ async def main() -> None:
             print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")  
             continue
 
-        # Retrieve configured max temperature for this asset
-        min_dq = app.assets[asset_id].parameters.get("dataquality_min_threshold")
-        print(f"Configured dq threshold for asset '{asset_id}': {min_dq}")
-
-        if min_dq is None:
-            print(f"No dq threshold configured for asset '{asset_id}'. Skipping.")
-            continue
-
         # If current temperature exceeds allowed limit, prepare a recommendation
 
         # Get last known motor speed; skip if unavailable
