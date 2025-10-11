@@ -17,6 +17,7 @@ from kelvin.message.evidences import Image, Markdown
 
 async def stream_asset_datastream_data_quality_messages(app: KelvinApp):
     async for message in app.stream_filter(filters.is_asset_data_stream_quality_message):
+        print(f"Received asset datastream data quality message: {message}")
         asset_id = message.resource.asset
         datastream = message.resource.data_stream
         data_quality_metric = message.resource.data_quality
