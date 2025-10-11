@@ -19,7 +19,7 @@ async def stream_data_quality_messages(app: KelvinApp, latest_dq: dict[str, floa
         return asset_id, latest_dq
 
 # Process each incoming asset data message
-async def stream_asset_data_messages(app: KelvinApp, latest_speed: dict[str, float], latest_casing_pressure: dict[str, float], latest_tubing_pressure: dict[str, float]) -> None:
+async def stream_asset_data_messages(app: KelvinApp, latest_value: dict[str, float]) -> None:
     async for message in app.stream_filter(filters.is_asset_data_message):
         asset_id = message.resource.asset
         data_stream = message.resource.data_stream
@@ -27,20 +27,8 @@ async def stream_asset_data_messages(app: KelvinApp, latest_speed: dict[str, flo
 
         print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
         
-        if data_stream == "speed":
-            latest_speed[asset_id] = measurement
-            print(f"Updated latest speed for asset '{asset_id}': {measurement}")
-            return asset_id, latest_speed
-
-        if data_stream == "casing_pressure":
-            latest_casing_pressure[asset_id] = measurement
-            print(f"Updated latest casing pressure for asset '{asset_id}': {measurement}")
-            return asset_id, latest_casing_pressure
-
-        if data_stream == "tubing_pressure":
-            latest_tubing_pressure[asset_id] = measurement
-            print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")
-            return asset_id, latest_tubing_pressure
+        latest_value[asset_id] = measurement
+        print(f"Updated latest {data_stream} for asset '{asset_id}': {measurement}")
 
 async def main() -> None:
     """
