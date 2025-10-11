@@ -8,7 +8,7 @@ from kelvin.message.evidences import Image, Markdown
 
 
 async def stream_data_quality_messages(app: KelvinApp, latest_dq: dict[str, float]) -> None:
-    for message in app.stream_filter(filters.is_asset_data_quality_message):
+    async for message in app.stream_filter(filters.is_asset_data_quality_message):
         asset_id = message.resource.asset
         data_quality_metric = message.resource.data_quality
         value = message.payload
@@ -20,7 +20,7 @@ async def stream_data_quality_messages(app: KelvinApp, latest_dq: dict[str, floa
 
 # Process each incoming asset data message
 async def stream_asset_data_messages(app: KelvinApp, latest_speed: dict[str, float], latest_casing_pressure: dict[str, float], latest_tubing_pressure: dict[str, float]) -> None:
-    for message in app.stream_filter(filters.is_asset_data_message):
+    async for message in app.stream_filter(filters.is_asset_data_message):
         asset_id = message.resource.asset
         data_stream = message.resource.data_stream
         measurement = message.payload
