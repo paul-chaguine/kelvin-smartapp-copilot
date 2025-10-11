@@ -7,7 +7,7 @@ from kelvin.message import ControlChange, Recommendation
 from kelvin.message.evidences import Image, Markdown
 
 
-async def stream_data_quality_messages(app: KelvinApp) -> None:
+async def stream_data_quality_messages(app: KelvinApp):
     async for message in app.stream_filter(filters.is_asset_data_quality_message):
         asset_id = message.resource.asset
         data_quality_metric = message.resource.data_quality
@@ -17,7 +17,7 @@ async def stream_data_quality_messages(app: KelvinApp) -> None:
         return asset_id, data_quality_metric, dq_value
 
 # Process each incoming asset data message
-async def stream_asset_data_messages(app: KelvinApp) -> None:
+async def stream_asset_data_messages(app: KelvinApp):
     async for message in app.stream_filter(filters.is_asset_data_message):
         asset_id = message.resource.asset
         data_stream = message.resource.data_stream
@@ -112,7 +112,7 @@ async def main() -> None:
         latest_tubing_pressure = results[2]
         print(f"Latest tubing pressure for asset '{asset_id}': {latest_tubing_pressure}")
 
-    asyncio.sleep(200)
+    await asyncio.sleep(200)
 
 
 if __name__ == "__main__":
