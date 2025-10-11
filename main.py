@@ -60,7 +60,7 @@ async def main() -> None:
             continue
 
         # If current temperature exceeds allowed limit, prepare a recommendation
-        if latest_dq > min_dq:
+        if 100 > min_dq:
             print(f"DQ {measurement} above limit {min_dq} for asset '{asset_id}'.")
 
             # Get last known motor speed; skip if unavailable
