@@ -42,14 +42,17 @@ async def main() -> None:
         
         if data_stream == "speed":
             latest_speed[asset_id] = measurement
+            print(f"Updated latest speed for asset '{asset_id}': {measurement}")
             continue
 
         if data_stream == "casing_pressure":
             latest_casing_pressure[asset_id] = measurement
+            print(f"Updated latest casing pressure for asset '{asset_id}': {measurement}")
             continue
 
         if data_stream == "tubing_pressure":
             latest_tubing_pressure[asset_id] = measurement
+            print(f"Updated latest tubing pressure for asset '{asset_id}': {measurement}")  
             continue
 
         # Retrieve configured max temperature for this asset
