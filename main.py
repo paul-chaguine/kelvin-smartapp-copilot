@@ -60,56 +60,54 @@ async def main() -> None:
             continue
 
         # If current temperature exceeds allowed limit, prepare a recommendation
-        if 100 > min_dq:
-            print(f"DQ {measurement} above limit {min_dq} for asset '{asset_id}'.")
 
-            # Get last known motor speed; skip if unavailable
-            speed = latest_speed.get(asset_id)
-            if speed is None:
-                print(f"Missing recent motor speed for '{asset_id}'. Cannot calculate adjustment.")
-                continue
+        # Get last known motor speed; skip if unavailable
+        speed = latest_speed.get(asset_id)
+        if speed is None:
+            print(f"Missing recent motor speed for '{asset_id}'. Cannot calculate adjustment.")
+            continue
 
-            # Reduce speed by 10% for safety
-            new_speed_setpoint = speed * 0.9
-            if new_speed_setpoint < 0:
-                print(f"Calculated new speed setpoint {new_speed_setpoint} is invalid for asset '{asset_id}'.")
-                continue
+        # Reduce speed by 10% for safety
+        new_speed_setpoint = speed * 0.9
+        if new_speed_setpoint < 0:
+            print(f"Calculated new speed setpoint {new_speed_setpoint} is invalid for asset '{asset_id}'.")
+            continue
 
-            control_action = ControlChange(
-                resource=KRNAssetDataStream(asset_id, "motor_speed_set_point"),
-                payload=new_speed_setpoint,
-                expiration_date=timedelta(minutes=30),
-            )
+        control_action = ControlChange(
+            resource=KRNAssetDataStream(asset_id, "motor_speed_set_point"),
+            payload=new_speed_setpoint,
+            expiration_date=timedelta(minutes=30),
+        )
 
-            # Include step-by-step guidance in markdown
-            guidance = Markdown(
-                title="Conduct a Thorough Load Assessment",
-                markdown=(
-                    "- **Measure** discharge pressure and flow rate.\n"
-                    "- **Compare** readings to the pump-motor curve.\n"
-                    "- **Action:** If pressure is too high, consider trimming impeller or reconfiguring pump staging.\n"
-                ),
-            )
+        # Include step-by-step guidance in markdown
+        guidance = Markdown(
+            title="Conduct a Thorough Load Assessment",
+            markdown=(
+                "- **Measure** discharge pressure and flow rate.\n"
+                "- **Compare** readings to the pump-motor curve.\n"
+                "- **Action:** If pressure is too high, consider trimming impeller or reconfiguring pump staging.\n"
+            ),
+        )
 
-            # Placeholder for visual evidence (e.g., schematic or infographic)
-            infographic = Image(title="Load Assessment Infographic", url="https://kelvin-platform-cdn.kelvin.ai/demo-data/evidences/pcp_motor.jpg")
+        # Placeholder for visual evidence (e.g., schematic or infographic)
+        infographic = Image(title="Load Assessment Infographic", url="https://kelvin-platform-cdn.kelvin.ai/demo-data/evidences/pcp_motor.jpg")
 
-            # Build the recommendation object
-            recommendation = Recommendation(
-                resource=KRNAsset(asset_id),
-                type="Decrease Speed",
-                control_changes=[control_action],
-                evidences=[guidance, infographic],
-                auto_accepted=app.assets[asset_id].parameters.get("kelvin_closed_loop", False),
-                expiration_date=timedelta(minutes=30),
-            )
+        # Build the recommendation object
+        recommendation = Recommendation(
+            resource=KRNAsset(asset_id),
+            type="Decrease Speed",
+            control_changes=[control_action],
+            evidences=[guidance, infographic],
+            auto_accepted=app.assets[asset_id].parameters.get("kelvin_closed_loop", False),
+            expiration_date=timedelta(minutes=30),
+        )
 
-            # Send recommendation to Kelvin for operator review or auto-execution
-            await app.publish(recommendation)
+        # Send recommendation to Kelvin for operator review or auto-execution
+        await app.publish(recommendation)
 
-            print(f"Published Recommendation: set speed to {new_speed_setpoint} rpm")
+        print(f"Published Recommendation: set speed to {new_speed_setpoint} rpm")
 
-            asyncio.sleep(200)
+        asyncio.sleep(200)
 
 
 if __name__ == "__main__":
