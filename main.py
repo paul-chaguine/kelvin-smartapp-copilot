@@ -25,26 +25,30 @@ async def main() -> None:
         measurement = message.payload
 
         print(f"Received '{data_stream}' for asset '{asset_id}': {measurement}")
-
-        # Track motor speed measurements for future use
-        if data_stream == "motor_speed":
-            latest_motor_speeds[asset_id] = measurement
+        
+        if data_stream == "speed":
+            latest_speeds[asset_id] = measurement
+            continue
+        
+        # Track dq measurements for future use
+        if data_stream == "data_quality":
+            dq[asset_id] = measurement
             continue
 
         # Only act on motor_temperature readings
-        if data_stream != "motor_temperature":
+        if data_stream != "data_quality":
             continue
 
         # Retrieve configured max temperature for this asset
-        max_temp = app.assets[asset_id].parameters.get("temperature_max_threshold")
+        min_dq = app.assets[asset_id].parameters.get("dataquality_min_threshold")
 
-        if max_temp is None:
-            print(f"No temperature threshold configured for asset '{asset_id}'. Skipping.")
+        if min_dq is None:
+            print(f"No dq threshold configured for asset '{asset_id}'. Skipping.")
             continue
 
         # If current temperature exceeds allowed limit, prepare a recommendation
-        if measurement > max_temp:
-            print(f"Temperature {measurement}° exceeds limit {max_temp}° for asset '{asset_id}'.")
+        if measurement > min_dq:
+            print(f"DQ {measurement} above limit {min_dq} for asset '{asset_id}'.")
 
             # Get last known motor speed; skip if unavailable
             speed = latest_motor_speeds.get(asset_id)

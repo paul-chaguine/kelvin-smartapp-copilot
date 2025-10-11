@@ -1,8 +1,8 @@
 spec_version: 5.0.0
 type: app
-name: voltage-app
-title: Voltage Anomaly Detection
-description: This is a hello app for demonstration purposes.
+name: speed-rec-dataquality
+title: Speed Recommendations Data Quality
+description: Send speed recommendations if data quality metrics are above thresholds
 version: 1.0.0
 flags:
   enable_runtime_update:
@@ -12,9 +12,13 @@ flags:
     resource_properties: true
 data_streams:
   inputs:
-    - name: motor_temperature
+    - name: data_quality
       data_type: number
-    - name: motor_speed
+    - name: speed
+      data_type: number
+    - name: casing_pressure
+      data_type: number
+    - name: tubing_pressure
       data_type: number
   outputs: []
 control_changes:
@@ -28,7 +32,7 @@ custom_actions:
 parameters:
   - name: kelvin_closed_loop
     data_type: boolean
-  - name: temperature_max_threshold
+  - name: dataquality_min_threshold
     data_type: number
 ui_schemas:
   parameters: ui_schemas/parameters.json
